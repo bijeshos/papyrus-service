@@ -13,11 +13,11 @@ import (
 func MakeAdduserEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(AddUserRequest)
-		v, err := svc.AddUser(req.S)
+		userId, err := svc.AddUser(req.FirstName, req.LastName)
 		if err != nil {
-			return AddUserResponse{v, err.Error()}, nil
+			return AddUserResponse{userId, err.Error()}, nil
 		}
-		return AddUserResponse{v, ""}, nil
+		return AddUserResponse{userId, ""}, nil
 	}
 }
 
@@ -51,10 +51,11 @@ func EncodeRequest(_ context.Context, r *http.Request, request interface{}) erro
 }
 
 type AddUserRequest struct {
-	S string `json:"s"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 type AddUserResponse struct {
-	V   string `json:"v"`
-	Err string `json:"err,omitempty"`
+	UserId int    `json:"userId"`
+	Err    string `json:"err,omitempty"`
 }

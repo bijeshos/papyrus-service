@@ -17,17 +17,17 @@ type logmw struct {
 	Service
 }
 
-func (mw logmw) AddUser(s string) (output string, err error) {
+func (mw logmw) AddUser(firstName, lastName string) (output int, err error) {
 	defer func(begin time.Time) {
 		_ = mw.logger.Log(
 			"method", "addUser",
-			"input", s,
+			"input", firstName+lastName,
 			"output", output,
 			"err", err,
 			"took", time.Since(begin),
 		)
 	}(time.Now())
 
-	output, err = mw.Service.AddUser(s)
+	output, err = mw.Service.AddUser(firstName, lastName)
 	return
 }

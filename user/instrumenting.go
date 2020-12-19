@@ -24,13 +24,13 @@ type instrmw struct {
 	Service
 }
 
-func (mw instrmw) AddUser(s string) (output string, err error) {
+func (mw instrmw) AddUser(firstName, lastName string) (output int, err error) {
 	defer func(begin time.Time) {
 		lvs := []string{"method", "addUser", "error", fmt.Sprint(err != nil)}
 		mw.requestCount.With(lvs...).Add(1)
 		mw.requestLatency.With(lvs...).Observe(time.Since(begin).Seconds())
 	}(time.Now())
 
-	output, err = mw.Service.AddUser(s)
+	output, err = mw.Service.AddUser(firstName, lastName)
 	return
 }

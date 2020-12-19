@@ -58,7 +58,7 @@ func main() {
 		user.EncodeResponse,
 	)
 
-	http.Handle("/add-user", addUserHandler)
+	http.Handle("/papyrus/api/v1/add-user", addUserHandler)
 
 	http.Handle("/metrics", promhttp.Handler())
 	logger.Log("msg", "HTTP", "addr", *listen)

@@ -72,20 +72,21 @@ type Proxymw struct {
 	addUser endpoint.Endpoint // ...except Uppercase, which gets served by this endpoint
 }
 
-func (mw Proxymw) AddUser(s string) (string, error) {
-	response, err := mw.addUser(mw.ctx, AddUserRequest{S: s})
+func (mw Proxymw) AddUser(firstName, lastName string) (int, error) {
+	response, err := mw.addUser(mw.ctx, AddUserRequest{FirstName: firstName, LastName: lastName})
 	if err != nil {
-		return "", err
+		return -1, err
 	}
 
 	resp := response.(AddUserResponse)
 	if resp.Err != "" {
-		return resp.V, errors.New(resp.Err)
+		return resp.UserId, errors.New(resp.Err)
 	}
-	return resp.V, nil
+	return resp.UserId, nil
 }
 
 func makeAddUserProxy(ctx context.Context, instance string) endpoint.Endpoint {
+	fmt.Println("url instance:", instance)
 	if !strings.HasPrefix(instance, "http") {
 		instance = "http://" + instance
 	}
@@ -94,7 +95,7 @@ func makeAddUserProxy(ctx context.Context, instance string) endpoint.Endpoint {
 		panic(err)
 	}
 	if u.Path == "" {
-		u.Path = "/add-user"
+		u.Path = "/papyrus/api/v1/add-user"
 	}
 	return httptransport.NewClient(
 		"GET",
